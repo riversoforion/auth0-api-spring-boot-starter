@@ -1,4 +1,4 @@
-package com.cyberscout.util.auth0;
+package com.cyberscout.auth0;
 
 
 import com.auth0.client.auth.AuthAPI;
@@ -6,7 +6,7 @@ import com.auth0.exception.Auth0Exception;
 import com.auth0.json.auth.TokenHolder;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.cyberscout.util.auth0.Auth0Properties.ClientProperties;
+import com.cyberscout.auth0.Auth0Properties.ClientProperties;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.cyberscout.util.auth0;
+package com.cyberscout.auth0;
 
 
 import lombok.Getter;
