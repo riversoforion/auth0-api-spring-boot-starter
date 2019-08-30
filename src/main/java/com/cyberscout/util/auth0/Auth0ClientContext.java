@@ -18,10 +18,10 @@ import java.time.Instant;
 @Slf4j
 public class Auth0ClientContext {
 
-    private ClientProperties props;
-    private AuthAPI authApi;
+    private final ClientProperties props;
+    private final AuthAPI authApi;
     @Getter
-    private String apiId;
+    private final String apiId;
     private DecodedJWT accessToken;
     private TokenHolder rawToken;
     private Instant tokenExpiration;

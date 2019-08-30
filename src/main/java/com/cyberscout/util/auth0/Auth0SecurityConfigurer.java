@@ -7,8 +7,9 @@ import com.auth0.spring.security.api.JwtAuthenticationProvider;
 import com.auth0.spring.security.api.JwtWebSecurityConfigurer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,9 +19,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-@EnableAutoConfiguration
 @EnableConfigurationProperties({ Auth0Properties.class })
 @Configuration
+@ConditionalOnProperty(prefix = Auth0Properties.AUTH0_PREFIX, name = { "domain", "issuer", "audience" })
+@ComponentScan(basePackageClasses = Auth0SecurityConfigurer.class)
 @Slf4j
 public class Auth0SecurityConfigurer extends WebSecurityConfigurerAdapter {
 

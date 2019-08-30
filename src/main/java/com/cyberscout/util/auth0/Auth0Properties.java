@@ -25,6 +25,11 @@ public class Auth0Properties {
     /**
      * The Auth0 domain (the full tenant URL). Usually of the form:
      * {@code https://[tenant ID].auth0.com}, but might also be a custom domain.
+     * <p>
+     * <strong><em>IMPORTANT:</em></strong> This property controls
+     * auto-configuration. If the Auth0 beans are not being initialized, check
+     * to make sure that this property is supplied.
+     * </p>
      */
     private String domain;
     /**
@@ -32,10 +37,20 @@ public class Auth0Properties {
      * the expected value of the {@code iss} claim in the JWT. Usually, this  is
      * very similar to the {@link #getDomain() domain}, but will depend on your
      * Auth0 configuration.
+     * <p>
+     * <strong><em>IMPORTANT:</em></strong> This property controls
+     * auto-configuration. If the Auth0 beans are not being initialized, check
+     * to make sure that this property is supplied.
+     * </p>
      */
     private String issuer;
     /**
      * The API identifier (a.k.a. "audience") of this API in Auth0.
+     * <p>
+     * <strong><em>IMPORTANT:</em></strong> This property controls
+     * auto-configuration. If the Auth0 beans are not being initialized, check
+     * to make sure that this property is supplied.
+     * </p>
      */
     private String audience;
     /**

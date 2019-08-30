@@ -8,7 +8,7 @@ import com.auth0.exception.Auth0Exception;
 
 public final class Auth0ManagementContext extends Auth0ClientContext {
 
-    private String domain;
+    private final String domain;
     private ManagementAPI managementApi;
 
 

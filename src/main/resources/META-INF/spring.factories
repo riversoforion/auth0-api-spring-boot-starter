@@ -1,0 +1,1 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.cyberscout.util.auth0.Auth0SecurityConfigurer,com.cyberscout.util.auth0.Auth0ClientConfiguration
