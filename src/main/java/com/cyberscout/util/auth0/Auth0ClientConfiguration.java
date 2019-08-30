@@ -2,7 +2,6 @@ package com.cyberscout.util.auth0;
 
 
 import com.auth0.client.auth.AuthAPI;
-import com.cyberscout.util.auth0.Auth0Properties.ClientProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -27,7 +26,7 @@ public class Auth0ClientConfiguration {
 
 
     @Bean
-    @ConditionalOnProperty(prefix = ClientProperties.MANAGEMENT_KEY, name = "client.authenticationEnabled")
+    @ConditionalOnProperty(prefix = Auth0Properties.AUTH0_PREFIX, name = "client.authenticationEnabled")
     public AuthAPI authApi() {
 
         return new AuthAPI(this.props.getDomain(),

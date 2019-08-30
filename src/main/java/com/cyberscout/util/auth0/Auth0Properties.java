@@ -79,7 +79,7 @@ public class Auth0Properties {
          *   auth0.client.audiences.management=https://id.for.management.api
          * </pre>
          */
-        public static final String MANAGEMENT_KEY = "management";
+        public static final String MANAGEMENT_ID = "management";
 
         /**
          * Whether or not access to other APIs is enabled. If {@code true}, then
@@ -138,7 +138,7 @@ public class Auth0Properties {
 
         public boolean isManagementEnabled() {
 
-            return this.audiences.containsKey(MANAGEMENT_KEY);
+            return this.audiences.containsKey(MANAGEMENT_ID);
         }
     }
 
