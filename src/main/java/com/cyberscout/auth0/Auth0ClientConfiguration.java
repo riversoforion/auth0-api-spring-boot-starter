@@ -26,11 +26,9 @@ public class Auth0ClientConfiguration {
 
 
     @Bean
-    @ConditionalOnProperty(prefix = Auth0Properties.AUTH0_PREFIX, name = "client.authenticationEnabled")
+    @ConditionalOnProperty(prefix = Auth0Properties.AUTH0_PREFIX, name = { "client.id", "client.secret" })
     public AuthAPI authApi() {
 
-        return new AuthAPI(this.props.getDomain(),
-                           this.props.getClient().getClientId(),
-                           this.props.getClient().getClientSecret());
+        return new AuthAPI(this.props.getDomain(), this.props.getClient().getId(), this.props.getClient().getSecret());
     }
 }

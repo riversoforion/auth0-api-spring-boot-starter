@@ -39,7 +39,7 @@ public class Auth0ClientContext {
 
     protected static void preBuildCheck(String apiId, ClientProperties props) {
 
-        if (!props.isEnabled()) {
+        if (!props.isAuthenticationEnabled()) {
             throw new IllegalArgumentException("Client functionality is disabled");
         }
         if (!props.hasAudience(apiId)) {

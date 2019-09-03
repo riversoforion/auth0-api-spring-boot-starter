@@ -5,6 +5,8 @@ import com.auth0.client.auth.AuthAPI;
 import com.auth0.client.mgmt.ManagementAPI;
 import com.auth0.exception.Auth0Exception;
 
+import static com.cyberscout.auth0.Auth0Properties.ClientProperties.MANAGEMENT_ID;
+
 
 public final class Auth0ManagementContext extends Auth0ClientContext {
 
@@ -12,11 +14,10 @@ public final class Auth0ManagementContext extends Auth0ClientContext {
     private ManagementAPI managementApi;
 
 
-    public static Auth0ManagementContext buildFor(String apiId, Auth0Properties props, AuthAPI authApi)
-            throws Auth0Exception {
+    public static Auth0ManagementContext buildFor(Auth0Properties props, AuthAPI authApi) throws Auth0Exception {
 
-        Auth0ClientContext.preBuildCheck(apiId, props.getClient());
-        return new Auth0ManagementContext(apiId, props, authApi).init();
+        Auth0ClientContext.preBuildCheck(MANAGEMENT_ID, props.getClient());
+        return new Auth0ManagementContext(MANAGEMENT_ID, props, authApi).init();
     }
 
 
@@ -33,6 +34,7 @@ public final class Auth0ManagementContext extends Auth0ClientContext {
         super.init();
         return this;
     }
+
 
     public ManagementAPI manage() throws Auth0Exception {
 
