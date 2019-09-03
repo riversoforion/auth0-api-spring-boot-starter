@@ -2,8 +2,10 @@ package com.cyberscout.auth0;
 
 
 import com.auth0.client.auth.AuthAPI;
+import com.auth0.exception.Auth0Exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -30,5 +32,14 @@ public class Auth0ClientConfiguration {
     public AuthAPI authApi() {
 
         return new AuthAPI(this.props.getDomain(), this.props.getClient().getId(), this.props.getClient().getSecret());
+    }
+
+
+    @Bean
+    @ConditionalOnBean(AuthAPI.class)
+    @ConditionalOnProperty(prefix = Auth0Properties.AUTH0_PREFIX, name = "client.audiences.management")
+    public Auth0ManagementContext managementContext() throws Auth0Exception {
+
+        return Auth0ManagementContext.buildFor(this.props, this.authApi());
     }
 }
