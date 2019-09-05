@@ -17,6 +17,23 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 
+/**
+ * <p>
+ * Central Spring configuration to secure an API with Auth0. It performs the
+ * following configuration:
+ * </p>
+ * <ul>
+ * <li>Registers the Auth0 Spring Security integration with Spring Security</li>
+ * <li>Enables Spring Security's method annotations, including the
+ * {@code @Secured} and {@code @Pre/PostAuthorize} annotations</li>
+ * </ul>
+ * <p>
+ * Requires the {@link Auth0Properties#getDomain() auth0.domain},
+ * {@link Auth0Properties#getIssuer() auth0.issuer}, and
+ * {@link Auth0Properties#getAudience() auth0.audience} properties to be
+ * present.
+ * </p>
+ */
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @EnableConfigurationProperties({ Auth0Properties.class })

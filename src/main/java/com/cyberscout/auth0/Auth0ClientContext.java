@@ -14,21 +14,55 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.Instant;
 
 
-@ToString
+/**
+ * <p>
+ * An object that encapsulates the context of invoking external, Auth0-secured
+ * APIs. Primarily, it manages the access token, which can then plugged into
+ * HTTP requests to the external API.
+ * </p>
+ * <p>
+ * The context object will efficiently handle access tokens by caching them
+ * until they expire, and then transparently acquiring a new one. It respects
+ * the system's {@linkplain ClientProperties#isPreCache() pre-cache} value by
+ * acquiring a token at system startup, if pre-cache is set to {@code true}.
+ * Otherwise, it will acquire and cache the tokens the first time they are
+ * accessed.
+ * </p>
+ */
+@ToString(onlyExplicitlyIncluded = true)
 @Slf4j
+// TODO Unit test me!
+// TODO Integration test me!
 public class Auth0ClientContext {
 
     private final ClientProperties props;
     private final AuthAPI authApi;
     @Getter
+    @ToString.Include
     private final String apiId;
     private DecodedJWT accessToken;
-    private TokenHolder rawToken;
+    private TokenHolder tokenInfo;
     private Instant tokenExpiration;
     @Getter
+    @ToString.Include(rank = 1)
     private String audience;
 
 
+    /**
+     * Creates a new context object, ensuring that it is properly initialized.
+     * The initial token is cached, if configured.
+     *
+     * @param apiId The
+     *         {@linkplain ClientProperties#getAudience() API identifier} to
+     *         create a context around
+     * @param props The Auth0 client properties to use when constructing the
+     *         context
+     * @param authApi The Auth0 Authentication API wrapper object
+     * @return The fully initialized client context
+     * @throws Auth0Exception If there is a problem retrieving the access token
+     * @throws IllegalArgumentException If the system is not properly configured
+     *         as a client context, or if the given API identifier is invalid
+     */
     public static Auth0ClientContext buildFor(String apiId, ClientProperties props, AuthAPI authApi)
             throws Auth0Exception {
 
@@ -37,6 +71,16 @@ public class Auth0ClientContext {
     }
 
 
+    /**
+     * Checks the configuration to be sure it is valid for a client context. If
+     * not, an exception will be thrown.
+     *
+     * @param apiId The
+     *         {@linkplain ClientProperties#getAudience() API identifier} to
+     *         create a context around
+     * @param props The Auth0 client properties to use when constructing the
+     *         context
+     */
     protected static void preBuildCheck(String apiId, ClientProperties props) {
 
         if (!props.isAuthenticationEnabled()) {
@@ -48,6 +92,19 @@ public class Auth0ClientContext {
     }
 
 
+    /**
+     * Constructs a raw client context object. The context will not be
+     * completely initialized by the constructor. Must only be invoked by
+     * sub-classes, as part of the initialization process.
+     *
+     * @param apiId The
+     *         {@linkplain ClientProperties#getAudience() API identifier} to
+     *         create a context around
+     * @param props The Auth0 client properties to use when constructing the
+     *         context
+     * @param authApi The Auth0 Authentication API wrapper object
+     * @see #init()
+     */
     protected Auth0ClientContext(String apiId, ClientProperties props, AuthAPI authApi) {
 
         this.apiId = apiId;
@@ -56,6 +113,12 @@ public class Auth0ClientContext {
     }
 
 
+    /**
+     * Finishes initializing the context, including caching tokens, if needed.
+     *
+     * @return The fully-initialized client context
+     * @throws Auth0Exception If there is a problem retrieving the access token
+     */
     protected Auth0ClientContext init() throws Auth0Exception {
 
         this.audience = props.getAudience(this.apiId);
@@ -66,43 +129,85 @@ public class Auth0ClientContext {
     }
 
 
+    /**
+     * Retrieves the decoded access token. Declared as a method, rather than an
+     * accessor, to indicate that it has side effects (potentially retrieving a
+     * new token).
+     *
+     * @return The decoded access token
+     * @throws Auth0Exception If there was a problem retrieving a new access
+     *         token
+     */
     public DecodedJWT accessToken() throws Auth0Exception {
 
-        if (this.needsTokenRefresh()) {
-            this.cacheTokenInfo();
-        }
+        this.cacheNewTokenIfNeeded();
         return this.accessToken;
     }
 
 
-    public TokenHolder rawToken() throws Auth0Exception {
+    /**
+     * Retrieves information about this context's current token. Declared as a
+     * method, rather than an accessor, to indicate that it has side effects
+     * (potentially retrieving a new token).
+     *
+     * @return An object containing information about the token
+     * @throws Auth0Exception If there was a problem retrieving a new access
+     *         token
+     */
+    public TokenHolder tokenInfo() throws Auth0Exception {
 
-        if (this.needsTokenRefresh()) {
-            this.cacheTokenInfo();
-        }
-        return this.rawToken;
+        this.cacheNewTokenIfNeeded();
+        return this.tokenInfo;
     }
 
 
+    /**
+     * Retrieves the time that this context's current token expires. Declared as
+     * a method, rather than an accessor, to indicate that it has side effects
+     * (potentially retrieving a new token).
+     *
+     * @return The instant when the current token will expire
+     * @throws Auth0Exception If there was a problem retrieving a new access
+     *         token
+     */
     public Instant tokenExpiration() throws Auth0Exception {
 
-        if (this.needsTokenRefresh()) {
-            this.cacheTokenInfo();
-        }
+        this.cacheNewTokenIfNeeded();
         return this.tokenExpiration;
     }
 
 
+    /**
+     * Requests a new token from Auth0 and caches it.
+     *
+     * @throws Auth0Exception If there was a problem retrieving a new access
+     *         token
+     */
     protected void cacheTokenInfo() throws Auth0Exception {
 
-        this.rawToken = this.authApi.requestToken(this.audience).execute();
-        this.accessToken = JWT.decode(this.rawToken.getAccessToken());
-        long validForSeconds = this.rawToken.getExpiresIn();
+        // TODO Make this all thread-safe
+        this.tokenInfo = this.authApi.requestToken(this.audience).execute();
+        this.accessToken = JWT.decode(this.tokenInfo.getAccessToken());
+        long validForSeconds = this.tokenInfo.getExpiresIn();
         this.tokenExpiration = Instant.now().plusSeconds(validForSeconds);
     }
 
 
-    protected boolean needsTokenRefresh() {
+    /**
+     * Determines whether this context needs a new token, and caches it if so.
+     *
+     * @throws Auth0Exception If there was a problem retrieving a new access
+     *         token
+     */
+    protected void cacheNewTokenIfNeeded() throws Auth0Exception {
+
+        if (this.needsTokenRefresh()) {
+            this.cacheTokenInfo();
+        }
+    }
+
+
+    private boolean needsTokenRefresh() {
 
         return this.tokenExpiration == null || this.tokenExpiration.isBefore(Instant.now());
     }
