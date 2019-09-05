@@ -68,6 +68,6 @@ public class Auth0SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .configure(http)
                 .authorizeRequests().anyRequest().permitAll();
         //@formatter:on
-        log.debug("Web security configuration complete");
+        log.info("Auth0 web security configuration complete");
     }
 }

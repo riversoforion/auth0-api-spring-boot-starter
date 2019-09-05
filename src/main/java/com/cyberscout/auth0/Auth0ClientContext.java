@@ -66,6 +66,7 @@ public class Auth0ClientContext {
     public static Auth0ClientContext buildFor(String apiId, ClientProperties props, AuthAPI authApi)
             throws Auth0Exception {
 
+        log.debug("Building context for client '{}'", apiId);
         Auth0ClientContext.preBuildCheck(apiId, props);
         return new Auth0ClientContext(apiId, props, authApi).init();
     }
@@ -121,10 +122,12 @@ public class Auth0ClientContext {
      */
     protected Auth0ClientContext init() throws Auth0Exception {
 
+        log.debug("Initializing context for client '{}'", this.apiId);
         this.audience = props.getAudience(this.apiId);
         if (props.isPreCache()) {
             this.cacheTokenInfo();
         }
+        log.debug("Finished initializing context for client '{}'", this.apiId);
         return this;
     }
 
@@ -186,10 +189,12 @@ public class Auth0ClientContext {
     protected void cacheTokenInfo() throws Auth0Exception {
 
         // TODO Make this all thread-safe
+        log.debug("Caching new token for client '{}'", this.apiId);
         this.tokenInfo = this.authApi.requestToken(this.audience).execute();
         this.accessToken = JWT.decode(this.tokenInfo.getAccessToken());
         long validForSeconds = this.tokenInfo.getExpiresIn();
         this.tokenExpiration = Instant.now().plusSeconds(validForSeconds);
+        log.debug("New token successfully cached for client '{}'", this.apiId);
     }
 
 

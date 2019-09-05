@@ -43,6 +43,7 @@ public class Auth0ClientConfiguration {
     @ConditionalOnProperty(prefix = Auth0Properties.AUTH0_PREFIX, name = { "client.id", "client.secret" })
     public AuthAPI authApi() {
 
+        log.debug("Creating Auth0 Authentication API wrapper bean");
         return new AuthAPI(this.props.getDomain(), this.props.getClient().getId(), this.props.getClient().getSecret());
     }
 
@@ -62,6 +63,7 @@ public class Auth0ClientConfiguration {
     @ConditionalOnProperty(prefix = Auth0Properties.AUTH0_PREFIX, name = "client.audiences.management")
     public Auth0ManagementContext managementContext() throws Auth0Exception {
 
+        log.debug("Creating Management client context bean");
         return Auth0ManagementContext.buildFor(this.props, this.authApi());
     }
 }

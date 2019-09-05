@@ -39,6 +39,7 @@ public final class Auth0ManagementContext extends Auth0ClientContext {
      */
     public static Auth0ManagementContext buildFor(Auth0Properties props, AuthAPI authApi) throws Auth0Exception {
 
+        log.debug("Building context for the Management API");
         Auth0ClientContext.preBuildCheck(MANAGEMENT_ID, props.getClient());
         return new Auth0ManagementContext(props, authApi).init();
     }
@@ -60,16 +61,11 @@ public final class Auth0ManagementContext extends Auth0ClientContext {
     }
 
 
-    /**
-     * Finishes initializing the context, including caching tokens, if needed.
-     *
-     * @return The fully-initialized client context
-     * @throws Auth0Exception If there is a problem retrieving the access token
-     */
     @Override
     protected Auth0ManagementContext init() throws Auth0Exception {
 
         super.init();
+        // Overridden to narrow the return type
         return this;
     }
 
