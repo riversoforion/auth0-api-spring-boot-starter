@@ -91,4 +91,88 @@ public class MyService {
 
 ### Using the Management API
 
+To use the Auth0 Management API, the Authentication API must be configured,
+along with the following additional properties:
+
+- `auth0.client.audiences.management`
+
+This property must be set with the audience identifier of your tenant's
+Management API.
+
+See [Auth0Properties](src/main/java/com/cyberscout/auth0/Auth0Properties.java)
+for more details.
+
+With the correct configuration in place, an `Auth0ManagementContext` bean can be
+injected and used to acquire a wrapper around the Management API:
+
+```java
+@Service
+public class MyService {
+    
+    private Auth0ManagementContext management;
+    
+    @Autowired
+    public MyService(Auth0ManagementContext management) {
+        this.management = management;
+    }
+    
+    public void someServiceMethod() {
+        ManagementAPI tenant = this.management.manage();
+        // Use the Management API wrapper object
+    }
+}
+```
+
+See
+[Auth0ManagementContext](src/main/java/com/cyberscout/auth0/Auth0ManagementContext.java)
+for more details on usage.
+
 ### Using Other Auth0-Secured APIs
+
+If your API needs to invoke other APIs that are also secured with Auth0, then
+"context" beans can be constructed that will acquire the needed token
+transparently.
+
+Since these arbitrary APIs cannot be known by this starter, your consumer code
+must construct the beans. The must construct the beans. The starter will assist
+with providing the necessary dependency beans and configuration.
+
+```java
+// MySpringConfiguration.java
+public class MySpringConfiguration {
+    private AuthAPI authApi;
+    private Auth0Properties props;
+    
+    @Autowired
+    public MySpringConfiguration(AuthAPI authApi, Auth0Properties props) {
+        this.authApi = authApi;
+        this.props = props;
+    }
+    
+    @Bean
+    public Auth0ClientContext someApiTokenContext() {
+        return Auth0ClientContext
+                .buildFor(
+                        props.getAudience("someApi"),
+                        this.props.getClient(),
+                        this.authApi
+                );
+    }
+}
+
+// SomeApi.java
+public class SomeApi {
+    private Auth0ClientContext tokenContext;
+    
+    @Autowired
+    public SomeApi(Auth0ClientContext tokenContext) {
+        this.tokenContext = tokenContext;
+    }
+    
+    public void someApiOperation() {
+        String token = this.tokenContext.accessToken().getToken();
+        // Use token to construct Authorization header
+        // Use header in HTTP request
+    }
+}
+```
