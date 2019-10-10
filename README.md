@@ -102,29 +102,29 @@ Management API.
 See [Auth0Properties](src/main/java/com/cyberscout/auth0/Auth0Properties.java)
 for more details.
 
-With the correct configuration in place, an `Auth0ManagementContext` bean can be
-injected and used to acquire a wrapper around the Management API:
+With the correct configuration in place, an `TenantManagementContext` bean can
+be injected and used to acquire a wrapper around the Management API:
 
 ```java
 @Service
 public class MyService {
     
-    private Auth0ManagementContext management;
+    private TenantManagementContext tenant;
     
     @Autowired
-    public MyService(Auth0ManagementContext management) {
-        this.management = management;
+    public MyService(TenantManagementContext tenant) {
+        this.tenant = tenant;
     }
     
     public void someServiceMethod() {
-        ManagementAPI tenant = this.management.manage();
+        ManagementAPI mgmtApi = this.tenant.manage();
         // Use the Management API wrapper object
     }
 }
 ```
 
 See
-[Auth0ManagementContext](src/main/java/com/cyberscout/auth0/Auth0ManagementContext.java)
+[Auth0ManagementContext](src/main/java/com/cyberscout/auth0/TenantManagementContext.java)
 for more details on usage.
 
 ### Using Other Auth0-Secured APIs
@@ -134,8 +134,8 @@ If your API needs to invoke other APIs that are also secured with Auth0, then
 transparently.
 
 Since these arbitrary APIs cannot be known by this starter, your consumer code
-must construct the beans. The must construct the beans. The starter will assist
-with providing the necessary dependency beans and configuration.
+must construct the beans. The starter will assist with providing the necessary
+dependency beans and configuration.
 
 ```java
 // MySpringConfiguration.java
@@ -150,8 +150,8 @@ public class MySpringConfiguration {
     }
     
     @Bean
-    public Auth0ClientContext someApiTokenContext() {
-        return Auth0ClientContext
+    public ClientTokenContext someApiTokenContext() {
+        return ClientTokenContext
                 .buildFor(
                         props.getAudience("someApi"),
                         this.props.getClient(),
@@ -162,10 +162,10 @@ public class MySpringConfiguration {
 
 // SomeApi.java
 public class SomeApi {
-    private Auth0ClientContext tokenContext;
+    private ClientTokenContext tokenContext;
     
     @Autowired
-    public SomeApi(Auth0ClientContext tokenContext) {
+    public SomeApi(ClientTokenContext tokenContext) {
         this.tokenContext = tokenContext;
     }
     
@@ -176,3 +176,7 @@ public class SomeApi {
     }
 }
 ```
+
+See
+[ClientTokenContext](src/main/java/com/cyberscout/auth0/ClientTokenContext.java)
+for more details on usage.

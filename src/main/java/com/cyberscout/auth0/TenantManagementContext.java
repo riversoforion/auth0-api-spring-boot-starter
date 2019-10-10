@@ -11,15 +11,15 @@ import static com.cyberscout.auth0.Auth0Properties.ClientProperties.MANAGEMENT_I
 
 
 /**
- * An object that encapsulates the context of invoking Auth0's Management API.
- * In addition to managing the access token, also provides the Auth0 Management
- * API wrapper object
+ * An object that encapsulates the context of managing the Auth0 tenant.
+ * Provides the Auth0 Management API wrapper object, along with managing its
+ * access token.
  */
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @Slf4j
 // TODO Unit test me!
-// TODO Integration test me!
-public final class Auth0ManagementContext extends Auth0ClientContext {
+// TODO Integration test me!a
+public final class TenantManagementContext extends ClientTokenContext {
 
     @ToString.Include
     private final String domain;
@@ -37,11 +37,11 @@ public final class Auth0ManagementContext extends Auth0ClientContext {
      * @throws IllegalArgumentException If the system is not properly configured
      *         as a management context
      */
-    public static Auth0ManagementContext buildFor(Auth0Properties props, AuthAPI authApi) throws Auth0Exception {
+    public static TenantManagementContext buildFor(Auth0Properties props, AuthAPI authApi) throws Auth0Exception {
 
-        log.debug("Building context for the Management API");
-        Auth0ClientContext.preBuildCheck(MANAGEMENT_ID, props.getClient());
-        return new Auth0ManagementContext(props, authApi).init();
+        log.debug("Building tenant management context");
+        ClientTokenContext.preBuildCheck(MANAGEMENT_ID, props.getClient());
+        return new TenantManagementContext(props, authApi).init();
     }
 
 
@@ -54,7 +54,7 @@ public final class Auth0ManagementContext extends Auth0ClientContext {
      * @param authApi The Auth0 Authentication API wrapper object
      * @see #init()
      */
-    private Auth0ManagementContext(Auth0Properties props, AuthAPI authApi) {
+    private TenantManagementContext(Auth0Properties props, AuthAPI authApi) {
 
         super(MANAGEMENT_ID, props.getClient(), authApi);
         this.domain = props.getDomain();
@@ -62,7 +62,7 @@ public final class Auth0ManagementContext extends Auth0ClientContext {
 
 
     @Override
-    protected Auth0ManagementContext init() throws Auth0Exception {
+    protected TenantManagementContext init() throws Auth0Exception {
 
         super.init();
         // Overridden to narrow the return type
