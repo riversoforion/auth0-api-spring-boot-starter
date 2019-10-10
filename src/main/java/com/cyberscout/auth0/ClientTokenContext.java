@@ -33,7 +33,7 @@ import java.time.Instant;
 @Slf4j
 // TODO Unit test me!
 // TODO Integration test me!
-public class Auth0ClientContext {
+public class ClientTokenContext {
 
     private final ClientProperties props;
     private final AuthAPI authApi;
@@ -63,12 +63,12 @@ public class Auth0ClientContext {
      * @throws IllegalArgumentException If the system is not properly configured
      *         as a client context, or if the given API identifier is invalid
      */
-    public static Auth0ClientContext buildFor(String apiId, ClientProperties props, AuthAPI authApi)
+    public static ClientTokenContext buildFor(String apiId, ClientProperties props, AuthAPI authApi)
             throws Auth0Exception {
 
         log.debug("Building context for client '{}'", apiId);
-        Auth0ClientContext.preBuildCheck(apiId, props);
-        return new Auth0ClientContext(apiId, props, authApi).init();
+        ClientTokenContext.preBuildCheck(apiId, props);
+        return new ClientTokenContext(apiId, props, authApi).init();
     }
 
 
@@ -106,7 +106,7 @@ public class Auth0ClientContext {
      * @param authApi The Auth0 Authentication API wrapper object
      * @see #init()
      */
-    protected Auth0ClientContext(String apiId, ClientProperties props, AuthAPI authApi) {
+    protected ClientTokenContext(String apiId, ClientProperties props, AuthAPI authApi) {
 
         this.apiId = apiId;
         this.props = props;
@@ -120,7 +120,7 @@ public class Auth0ClientContext {
      * @return The fully-initialized client context
      * @throws Auth0Exception If there is a problem retrieving the access token
      */
-    protected Auth0ClientContext init() throws Auth0Exception {
+    protected ClientTokenContext init() throws Auth0Exception {
 
         log.debug("Initializing context for client '{}'", this.apiId);
         this.audience = props.getAudience(this.apiId);

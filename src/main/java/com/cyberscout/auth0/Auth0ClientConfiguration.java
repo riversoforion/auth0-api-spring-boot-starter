@@ -61,9 +61,9 @@ public class Auth0ClientConfiguration {
     @Bean
     @ConditionalOnBean(AuthAPI.class)
     @ConditionalOnProperty(prefix = Auth0Properties.AUTH0_PREFIX, name = "client.audiences.management")
-    public Auth0ManagementContext managementContext() throws Auth0Exception {
+    public TenantManagementContext tenant() throws Auth0Exception {
 
-        log.debug("Creating Management client context bean");
-        return Auth0ManagementContext.buildFor(this.props, this.authApi());
+        log.debug("Creating Auth0 tenant management context bean");
+        return TenantManagementContext.buildFor(this.props, this.authApi());
     }
 }
