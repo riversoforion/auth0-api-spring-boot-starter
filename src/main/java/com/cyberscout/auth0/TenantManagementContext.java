@@ -18,7 +18,7 @@ import static com.cyberscout.auth0.Auth0Properties.ClientProperties.MANAGEMENT_I
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
 @Slf4j
 // TODO Unit test me!
-// TODO Integration test me!a
+// TODO Integration test me!
 public final class TenantManagementContext extends ClientTokenContext {
 
     @ToString.Include
