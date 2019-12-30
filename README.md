@@ -1,6 +1,8 @@
 # Auth0 Spring Boot Starter for APIs
 
-_TODO: Placeholders for CI status, current version on Maven repo, etc._
+![](https://github.com/CyberScout/auth0-api-spring-boot-starter/workflows/CI%20Build/badge.svg)
+![](https://github.com/CyberScout/auth0-api-spring-boot-starter/workflows/CI%20Publish%20Release/badge.svg)
+[ ![Download](https://api.bintray.com/packages/cyberscout/cyberscout-oss-maven/auth0-api-spring-boot-starter/images/download.svg) ](https://bintray.com/cyberscout/cyberscout-oss-maven/auth0-api-spring-boot-starter/_latestVersion)
 
 This Spring Boot starter simplifies using Auth0 to secure an API built with
 Spring Security and Spring MVC. The project only needs to include this starter
