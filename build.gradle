@@ -1,37 +1,37 @@
 plugins {
     id 'maven'
     id 'java-library'
-    id "io.freefair.lombok" version "4.0.1"
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'io.freefair.lombok' version '5.1.1'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'maven-publish'
-    id 'com.jfrog.bintray' version '1.8.4'
+    id 'com.jfrog.bintray' version '1.8.5'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 group = 'com.cyberscout.oss'
-version = '0.5.1'
-sourceCompatibility = '1.8'
+version = '0.6.0'
 
 repositories {
     mavenCentral()
 }
 
-dependencyManagement {
-    imports {
-        mavenBom 'org.springframework.boot:spring-boot-dependencies:2.1.7.RELEASE'
-    }
-}
-
 dependencies {
-    api 'org.springframework.boot:spring-boot-autoconfigure'
-    api 'org.springframework.boot:spring-boot-starter-security'
-    api 'com.auth0:auth0-spring-security-api:1.2.5'
-    api 'com.auth0:auth0:1.14.2'
-    api 'com.auth0:java-jwt:3.8.2'
-    implementation('org.springframework.boot:spring-boot-starter-web')
-    implementation 'com.auth0:jwks-rsa:0.8.3'
-    compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
+    api 'com.auth0:auth0-spring-security-api:1.4.0'
+    api 'com.auth0:auth0:1.20.0'
+    api 'com.auth0:java-jwt:3.10.3'
+    api 'org.springframework.boot:spring-boot-autoconfigure:2.3.3.RELEASE'
+    api 'org.springframework.boot:spring-boot-starter-security:2.3.3.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.3.3.RELEASE'
+    implementation 'com.auth0:jwks-rsa:0.12.0'
+    compileOnly 'org.springframework.boot:spring-boot-configuration-processor:2.3.3.RELEASE'
+    testImplementation('org.springframework.boot:spring-boot-starter-test:2.3.3.RELEASE') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'org.springframework.security:spring-security-test:5.3.4.RELEASE'
 }
 
 //
@@ -78,6 +78,10 @@ publishing {
                         email = 'dev-support@cyberscout.com'
                         url = 'https://cyberscout.com'
                     }
+                }
+                issueManagement {
+                    system = 'GitHub Issues'
+                    url = "${githubUrl}/issues"
                 }
                 scm {
                     connection = publicGitUrl
